@@ -1,3 +1,4 @@
+# === الأساسية ===
 node_modules/
 build/
 dist/
@@ -6,3 +7,27 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# === Firebase & API Keys ===
+firebase-applet-config.json
+firebase-blueprint.json
+serviceAccountKey.json
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === OS ===
+Thumbs.db
+
+# === Cache ===
+.cache/
+.parcel-cache/
+
+# === Testing ===
+*.test.js.snap
+
+# === Misc ===
+*.local
