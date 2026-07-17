@@ -1,0 +1,135 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Global Safety Net - Default Deny Catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- REUSABLE SECURITY PRIMITIVES ---
+    
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isEmailVerified() {
+      // Mandate that the email is verified to prevent email-spoofing attacks
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isEmailVerified() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- ENTITY VALIDATORS ---
+
+    function isValidUser(data) {
+      return data.uid is string && data.uid.size() <= 128 && data.uid == request.auth.uid
+        && data.email is string && data.email.size() <= 256 && data.email == request.auth.token.email
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidUserProfileData(data) {
+      return data.userId is string && data.userId.size() <= 128 && data.userId == request.auth.uid
+        && data.name is string && data.name.size() <= 128 && data.name.size() > 0
+        && data.age is number && data.age >= 0 && data.age < 150
+        && data.maritalStatus is string && data.maritalStatus.size() <= 50
+        && data.city is string && data.city.size() <= 100
+        && data.jobTitle is string && data.jobTitle.size() <= 128
+        && data.netIncome is number && data.netIncome >= 0 && data.netIncome <= 10000000
+        && data.totalGross is number && data.totalGross >= 0 && data.totalGross <= 10000000
+        && data.gosi is number && data.gosi >= 0 && data.gosi <= 10000000
+        && data.housing is number && data.housing >= 0 && data.housing <= 10000000
+        && data.utilities is number && data.utilities >= 0 && data.utilities <= 10000000
+        && data.food is number && data.food >= 0 && data.food <= 10000000
+        && data.education is number && data.education >= 0 && data.education <= 10000000
+        && data.transport is number && data.transport >= 0 && data.transport <= 10000000
+        && data.health is number && data.health >= 0 && data.health <= 10000000
+        && data.phone is number && data.phone >= 0 && data.phone <= 10000000
+        && data.entertainment is number && data.entertainment >= 0 && data.entertainment <= 10000000
+        && data.clothing is number && data.clothing >= 0 && data.clothing <= 10000000
+        && data.family is number && data.family >= 0 && data.family <= 10000000
+        && data.debt is number && data.debt >= 0 && data.debt <= 10000000
+        && data.misc is number && data.misc >= 0 && data.misc <= 10000000
+        && data.currentSavings is number && data.currentSavings >= 0 && data.currentSavings <= 100000000
+        && data.emergencyTarget is number && data.emergencyTarget >= 0 && data.emergencyTarget <= 100000000
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    // --- COLLECTION RULES ---
+
+    // 1. Users collection
+    match /users/{userId} {
+      // Document ID poisoning guard
+      allow get: if isOwner(userId) && isValidId(userId);
+      
+      // Prevent list scraping - users cannot list all users
+      allow list: if false;
+
+      allow create: if isOwner(userId) && isValidId(userId)
+        && incoming().keys().hasAll(['uid', 'email', 'createdAt', 'updatedAt'])
+        && incoming().keys().size() == 4
+        && isValidUser(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+
+      allow update: if isOwner(userId) && isValidId(userId)
+        && isValidUser(incoming())
+        && incoming().updatedAt == request.time
+        && incoming().createdAt == existing().createdAt // Immutability of createdAt
+        && incoming().email == existing().email // Immutability of email
+        && incoming().diff(existing()).affectedKeys().hasOnly(['updatedAt']); // Only updatedAt can change in custom updates
+
+      allow delete: if isOwner(userId) && isValidId(userId);
+    }
+
+    // 2. Custom User Profiles Subcollection
+    match /users/{userId}/profiles/{profileId} {
+      allow get: if isOwner(userId) && isValidId(userId) && isValidId(profileId);
+      
+      // Explicitly check resource.data to prevent query trust loopholes
+      allow list: if isOwner(userId) && isValidId(userId);
+
+      allow create: if isOwner(userId) && isValidId(userId) && isValidId(profileId)
+        && profileId == 'custom' // Only 'custom' profile document can be created
+        && incoming().keys().hasAll([
+          'userId', 'name', 'age', 'maritalStatus', 'city', 'jobTitle', 'netIncome', 'totalGross', 'gosi',
+          'housing', 'utilities', 'food', 'education', 'transport', 'health', 'phone', 'entertainment',
+          'clothing', 'family', 'debt', 'misc', 'currentSavings', 'emergencyTarget', 'createdAt', 'updatedAt'
+        ])
+        && incoming().keys().size() == 25
+        && isValidUserProfileData(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+
+      allow update: if isOwner(userId) && isValidId(userId) && isValidId(profileId)
+        && profileId == 'custom'
+        && isValidUserProfileData(incoming())
+        && incoming().updatedAt == request.time
+        && incoming().createdAt == existing().createdAt // Immutability of createdAt
+        && incoming().userId == existing().userId // Immutability of userId link
+        && incoming().diff(existing()).affectedKeys().hasAny([
+          'name', 'age', 'maritalStatus', 'city', 'jobTitle', 'netIncome', 'totalGross', 'gosi',
+          'housing', 'utilities', 'food', 'education', 'transport', 'health', 'phone', 'entertainment',
+          'clothing', 'family', 'debt', 'misc', 'currentSavings', 'emergencyTarget', 'updatedAt'
+        ]);
+
+      allow delete: if isOwner(userId) && isValidId(userId) && isValidId(profileId);
+    }
+  }
+}

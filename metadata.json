@@ -1,0 +1,6 @@
+{
+  "name": "Smart Budget",
+  "description": "مساعد مالي ذكي لمساعدة العائلات والأفراد في المملكة العربية السعودية على تنظيم ميزانياتهم وتحقيق أهدافهم الادخارية.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

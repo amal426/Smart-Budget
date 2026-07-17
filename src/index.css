@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+:root {
+  --bg-page: #ffffff;
+  --bg-header: #c87941;
+  --bg-card: #ffffff;
+  --btn-primary: #34495e;
+  --btn-secondary: #d4a373;
+  --text-primary: #1a2332;
+  --text-normal: #1a2332;
+  --text-secondary: #7f8c8d;
+  --color-success: #27ae60;
+}
+
+.dark {
+  --bg-page: #1a2332;
+  --bg-header: #c87941;
+  --bg-card: #2c3e50;
+  --btn-primary: #d4a373;
+  --btn-secondary: #34495e;
+  --text-primary: #ffffff;
+  --text-normal: #ffffff;
+  --text-secondary: #a0aec0;
+  --color-success: #27ae60;
+}
+
+@theme {
+  --font-sans: "Cairo", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-brand-dark: var(--bg-page);
+  --color-brand-light: var(--bg-card);
+  --color-brand-primary: var(--btn-primary);
+  --color-brand-secondary: var(--btn-secondary);
+  --color-brand-text-dark: var(--text-normal);
+  --color-brand-text-light: var(--text-primary);
+  --color-brand-helper: var(--text-secondary);
+  --color-brand-success: var(--color-success);
+  --color-brand-header: var(--bg-header);
+}
+
+body {
+  font-family: var(--font-sans);
+  direction: rtl;
+}
+
+/* Global input fields custom overrides */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="submit"]):not([type="button"]),
+select,
+textarea {
+  background-color: #ffffff !important;
+  color: #1a2332 !important;
+  border: 1.5px solid #c87941 !important;
+}
+
+select option {
+  background-color: #ffffff !important;
+  color: #1a2332 !important;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="submit"]):not([type="button"]):focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid #c87941 !important;
+  outline-offset: -1px;
+}
+
+/* Placeholder styles */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="submit"]):not([type="button"])::placeholder,
+textarea::placeholder {
+  color: #6b7280 !important;
+  opacity: 1 !important;
+}
+
+/* Input icons style override */
+div.relative:has(input:not([type="checkbox"]):not([type="radio"]):not([type="range"])) svg,
+div.relative:has(select) svg,
+div.relative:has(textarea) svg {
+  color: #34495e !important;
+}
+

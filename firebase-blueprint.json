@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Main user registration and settings document",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    },
+    "UserProfileData": {
+      "title": "UserProfileData",
+      "description": "Custom budget and finance parameters for an authenticated user",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "age": { "type": "number" },
+        "maritalStatus": { "type": "string" },
+        "city": { "type": "string" },
+        "jobTitle": { "type": "string" },
+        "netIncome": { "type": "number" },
+        "totalGross": { "type": "number" },
+        "gosi": { "type": "number" },
+        "housing": { "type": "number" },
+        "utilities": { "type": "number" },
+        "food": { "type": "number" },
+        "education": { "type": "number" },
+        "transport": { "type": "number" },
+        "health": { "type": "number" },
+        "phone": { "type": "number" },
+        "entertainment": { "type": "number" },
+        "clothing": { "type": "number" },
+        "family": { "type": "number" },
+        "debt": { "type": "number" },
+        "misc": { "type": "number" },
+        "currentSavings": { "type": "number" },
+        "emergencyTarget": { "type": "number" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "name", "netIncome"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Authenticated user records"
+    },
+    "/users/{userId}/profiles/custom": {
+      "schema": { "$ref": "#/entities/UserProfileData" },
+      "description": "The user's personalized budget and financial parameters"
+    }
+  }
+}
