@@ -2,7 +2,7 @@
 
 🔗 **[جربه الآن على Google AI Studio](https://aistudio.google.com/apps/5adb5617-4cbb-4b26-926c-5396df00eee9?showAssistant=true&showPreview=true)**
 
-#المساعد المالي الذكي (Smart Budget)
+## المساعد المالي الذكي (Smart Budget)
 
 &gt; **مساعد مالي ذكي مخصص للفئات التي تجد التطبيقات المصرفية التقليدية معقدة** — يقدم توصيات مالية شخصية بلغة بسيطة ومحاكي حياة مالية تفاعلي.
 
@@ -33,12 +33,6 @@
 - تصميم بسيط وبديهي
 - دعم اللغة العربية بالكامل
 - تجربة مستخدم محسّنة للفئات المستهدفة
-
----
-
-## تجربة المشروع مباشرة(mvp)
-
-🔗 **[جربه الآن على Google AI Studio](https://aistudio.google.com/apps/5adb5617-4cbb-4b26-926c-5396df00eee9?showAssistant=true&showPreview=true)**
 
 ---
 
