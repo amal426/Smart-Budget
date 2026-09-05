@@ -53,6 +53,6 @@
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
-###تجربة المشروع مباشرة(mvp)
+### تجربة المشروع مباشرة(mvp)
 
 🔗[جربه الآن على Google AI Studio](https://aistudio.google.com/apps/5adb5617-4cbb-4b26-926c-5396df00eee9?showAssistant=true&showPreview=true
